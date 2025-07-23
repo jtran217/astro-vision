@@ -12,7 +12,7 @@ function FileUpload({
 
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.type.startsWith("video/*")) {
+    if (file && file.type.startsWith("video/")) {
       onFileUpload(file);
     }
   };
