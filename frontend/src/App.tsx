@@ -3,6 +3,18 @@ import "./App.css";
 import FileUpload from "./components/FileUpload";
 import Header from "./components/Header";
 import { VideoPlayer } from "./components/VideoPlayer";
+import { eventType, teamPlayer, outcome } from "./data/volleyballData";
+import TagPanel from "./components/TagPanel";
+import { EventTimeline } from "./components/EventTimeline";
+
+interface Event {
+  id: number;
+  timestamp: number;
+  eventType: string;
+  player: string;
+  outcome: string;
+  time: string;
+}
 
 function App() {
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
@@ -18,8 +30,14 @@ function App() {
   const handleTimeUpdate = (time: number) => {
     setCurrentTime(time);
   };
-  const handleClearTags = () => {
-    setEvents([]);
+  const handleAddTag = (tag: Event) => {
+    setEvents((prev) =>
+      [...prev, tag].sort((a, b) => a.timestamp - b.timestamp)
+    );
+  };
+  const handleEventClick = (timestamp: number) => {
+    setSeekTo(timestamp);
+    setTimeout(() => setSeekTo(null), 100);
   };
   return (
     <div className="min-h-screen  bg-gray-900 text-white">
@@ -35,6 +53,18 @@ function App() {
               onTimeUpdate={handleTimeUpdate}
               seekTo={seekTo}
             />
+          </div>
+          <div className="col-span-4">
+            <TagPanel
+              eventType={eventType}
+              players={teamPlayer}
+              outcome={outcome}
+              currentTime={currentTime}
+              onAddTag={handleAddTag}
+            />
+          </div>
+          <div className="col-span-12 mt-6">
+            <EventTimeline events={events} onEventClick={handleEventClick} />
           </div>
         </div>
       </div>
