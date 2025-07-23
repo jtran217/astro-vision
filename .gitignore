@@ -1,0 +1,14 @@
+# Node.js
+frontend/node_modules
+
+# Python
+backend/venv
+__pycache__/
+
+# OS files
+.DS_Store
+
+# Vite + FastAPI build artifacts
+dist/
+*.log
+.env
