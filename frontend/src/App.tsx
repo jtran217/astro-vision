@@ -35,6 +35,9 @@ function App() {
       [...prev, tag].sort((a, b) => a.timestamp - b.timestamp)
     );
   };
+  const handleDeleteTag = (id: number) => {
+    setEvents((prev) => prev.filter((event) => event.id != id));
+  };
   const handleEventClick = (timestamp: number) => {
     setSeekTo(timestamp);
     setTimeout(() => setSeekTo(null), 100);
@@ -64,7 +67,11 @@ function App() {
             />
           </div>
           <div className="col-span-12 mt-6">
-            <EventTimeline events={events} onEventClick={handleEventClick} />
+            <EventTimeline
+              events={events}
+              onEventClick={handleEventClick}
+              onDeleteClick={handleDeleteTag}
+            />
           </div>
         </div>
       </div>

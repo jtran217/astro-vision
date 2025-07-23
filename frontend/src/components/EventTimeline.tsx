@@ -1,5 +1,5 @@
 import React from "react";
-import { Clock, User, Target } from "lucide-react";
+import { Clock, User, Target, Trash2 } from "lucide-react";
 
 interface Event {
   id: number;
@@ -13,11 +13,13 @@ interface Event {
 interface EventTimelineProps {
   events: Event[];
   onEventClick: (timestamp: number) => void;
+  onDeleteClick: (id: number) => void;
 }
 
 export const EventTimeline: React.FC<EventTimelineProps> = ({
   events,
   onEventClick,
+  onDeleteClick,
 }) => {
   return (
     <div className="bg-gray-800 rounded-lg p-6">
@@ -62,8 +64,14 @@ export const EventTimeline: React.FC<EventTimelineProps> = ({
                       {event.outcome}
                     </span>
                   </div>
+                  <div className="text-xs text-gray-500">#{index + 1}</div>
                 </div>
-                <div className="text-xs text-gray-500">#{index + 1}</div>
+                <button
+                  onClick={() => onDeleteClick(event.id)}
+                  className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center"
+                >
+                  <Trash2 size={16} />
+                </button>
               </div>
             </div>
           ))}
