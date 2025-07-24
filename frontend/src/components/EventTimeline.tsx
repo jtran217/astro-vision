@@ -1,5 +1,5 @@
 import React from "react";
-import { Clock, User, Target, Trash2 } from "lucide-react";
+import { Clock, User, Trash2 } from "lucide-react";
 
 interface Event {
   id: number;
