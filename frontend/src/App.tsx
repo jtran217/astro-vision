@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import FileUpload from "./components/FileUpload";
 import Header from "./components/Header";
@@ -6,8 +6,10 @@ import { VideoPlayer } from "./components/VideoPlayer";
 import { eventType, teamPlayer, outcome } from "./data/volleyballData";
 import TagPanel from "./components/TagPanel";
 import { EventTimeline } from "./components/EventTimeline";
+import { cleanupExpiredVideos, generateVideoKey } from "./util/helper";
 
 interface Event {
+  videoId: string;
   id: number;
   timestamp: number;
   eventType: string;
@@ -21,27 +23,54 @@ function App() {
   const [currentTime, setCurrentTime] = useState(0);
   const [events, setEvents] = useState<Event[]>([]);
   const [seekTo, setSeekTo] = useState<number | null>(null);
+  const [videoId, setVideoId] = useState<string>("");
 
   const handleFileUpload = (file: File) => {
     const url = URL.createObjectURL(file);
+    const videoId = generateVideoKey(file);
+    setVideoId(videoId);
     setVideoSrc(url);
-    setEvents([]);
+    if (localStorage.getItem(videoId)) {
+      const videoData = JSON.parse(localStorage.getItem(videoId) || "{}");
+      setEvents(videoData.events);
+    } else {
+      setEvents([]);
+    }
   };
   const handleTimeUpdate = (time: number) => {
     setCurrentTime(time);
   };
   const handleAddTag = (tag: Event) => {
-    setEvents((prev) =>
-      [...prev, tag].sort((a, b) => a.timestamp - b.timestamp)
+    const newEvents = [...events, tag].sort(
+      (a, b) => a.timestamp - b.timestamp
     );
+    setEvents(newEvents);
+    const videoData = {
+      events: newEvents,
+      createdAt: Date.now(),
+      lastAccessed: Date.now(),
+    };
+    localStorage.setItem(videoId, JSON.stringify(videoData));
   };
   const handleDeleteTag = (id: number) => {
-    setEvents((prev) => prev.filter((event) => event.id != id));
+    const newEvents = events.filter((event) => event.id != id);
+    setEvents(newEvents);
+    const videoData = {
+      events: newEvents,
+      createdAt: Date.now(),
+      lastAccessed: Date.now(),
+    };
+    localStorage.setItem(videoId, JSON.stringify(videoData));
   };
   const handleEventClick = (timestamp: number) => {
     setSeekTo(timestamp);
     setTimeout(() => setSeekTo(null), 100);
   };
+
+  useEffect(() => {
+    cleanupExpiredVideos();
+  }, []);
+
   return (
     <div className="min-h-screen  bg-gray-900 text-white">
       <Header />
@@ -62,11 +91,12 @@ function App() {
               eventType={eventType}
               players={teamPlayer}
               outcome={outcome}
+              videoId={videoId}
               currentTime={currentTime}
               onAddTag={handleAddTag}
             />
           </div>
-          <div className="col-span-12 mt-6">
+          <div onClick={() => console.log(events)} className="col-span-12 mt-6">
             <EventTimeline
               events={events}
               onEventClick={handleEventClick}

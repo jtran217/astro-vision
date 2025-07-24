@@ -6,6 +6,7 @@ interface TagPanelProp {
   players: string[];
   outcome: string[];
   currentTime: number;
+  videoId: string;
   onAddTag: (tag: any) => void;
 }
 
@@ -14,6 +15,7 @@ const TagPanel: React.FC<TagPanelProp> = ({
   players,
   outcome,
   currentTime,
+  videoId,
   onAddTag,
 }) => {
   const [selectedEventType, setSelectedEventType] = useState(
@@ -34,6 +36,7 @@ const TagPanel: React.FC<TagPanelProp> = ({
 
   const handleAddTag = () => {
     const tag = {
+      videoId,
       id: Date.now(),
       timestamp: currentTime,
       eventType: selectedEventType,
@@ -88,13 +91,21 @@ const TagPanel: React.FC<TagPanelProp> = ({
       </div>
       <div className="mt-5 space-y-2">
         <h4>Current time {formatTime(currentTime)}</h4>
-        <div className="flex space-x-3">
+        <div className="space-x-3 space-y-3">
           <button
             onClick={handleAddTag}
             className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
           >
             <Plus size={16} />
             <span>Add Tag</span>
+          </button>
+          <button
+            onClick={() => {
+              localStorage.clear();
+            }}
+            className=" bg-red-400 hover:bg-red-500 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
+          >
+            <span>Clear Local Storage</span>
           </button>
         </div>
       </div>
