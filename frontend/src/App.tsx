@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import FileUpload from "./components/FileUpload";
 import Header from "./components/Header";
@@ -8,10 +8,13 @@ import TagPanel from "./components/TagPanel";
 import { EventTimeline } from "./components/EventTimeline";
 import {
   cleanupExpiredVideos,
+  downloadCurrentVideoMLExport,
+  exportCurrentVideoToML,
   generateVideoKey,
   sumActions,
 } from "./util/helper";
 import Export from "./components/Export";
+import { downloadCurrentVideoExcelExport } from "./util/exportHelper";
 
 interface Event {
   videoId: string;
@@ -29,6 +32,32 @@ function App() {
   const [events, setEvents] = useState<Event[]>([]);
   const [seekTo, setSeekTo] = useState<number | null>(null);
   const [videoId, setVideoId] = useState<string>("");
+  const playButtonRef = useRef<HTMLVideoElement>(null);
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (!videoSrc) return;
+
+    switch (event.key) {
+      case "ArrowLeft":
+        event.preventDefault();
+        setSeekTo(Math.max(0, currentTime - 1));
+        setTimeout(() => setSeekTo(null), 100);
+        break;
+      case "ArrowRight":
+        event.preventDefault();
+        setSeekTo(currentTime + 1);
+        setTimeout(() => setSeekTo(null), 100);
+        break;
+      case " ":
+        event.preventDefault();
+        if (playButtonRef.current?.paused) {
+          playButtonRef.current?.play();
+        } else {
+          playButtonRef.current?.pause();
+        }
+        break;
+    }
+  };
 
   const handleFileUpload = (file: File) => {
     const url = URL.createObjectURL(file);
@@ -42,10 +71,22 @@ function App() {
       setEvents([]);
     }
   };
-  const handleExportJson = () => {
-    const sumObject = sumActions(events);
-    console.log(sumObject);
+  const handleExportToMl = () => {
+    if (!videoId || events.length === 0) {
+      alert("Please load a video and add some events before exporting");
+      return;
+    }
+    downloadCurrentVideoMLExport(videoId, events);
   };
+
+  const handleExportExcel = () => {
+    if (!videoId || events.length === 0) {
+      alert("Please load a video and add some events before exporting");
+      return;
+    }
+    downloadCurrentVideoExcelExport(videoId, events);
+  };
+
   const handleTimeUpdate = (time: number) => {
     setCurrentTime(time);
   };
@@ -80,6 +121,13 @@ function App() {
     cleanupExpiredVideos();
   }, []);
 
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [videoSrc, currentTime]);
+
   return (
     <div className="min-h-screen  bg-gray-900 text-white">
       <Header />
@@ -90,6 +138,7 @@ function App() {
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-8">
             <VideoPlayer
+              ref={playButtonRef}
               videoSrc={videoSrc}
               onTimeUpdate={handleTimeUpdate}
               seekTo={seekTo}
@@ -113,7 +162,10 @@ function App() {
             />
           </div>
           <div className="col-span-4">
-            <Export exportJson={handleExportJson} />
+            <Export
+              exportToMl={handleExportToMl}
+              exportToExcel={handleExportExcel}
+            />
           </div>
         </div>
       </div>

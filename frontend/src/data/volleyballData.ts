@@ -9,4 +9,4 @@ export const teamPlayer = [
   "Anro ",
 ];
 
-export const outcome = ["Successful", "Block", "Error", "Neutral"];
+export const outcome = ["Successful", "Failure"];
