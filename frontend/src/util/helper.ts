@@ -20,3 +20,44 @@ export const cleanupExpiredVideos = (maxAgeInDays = 7) => {
     }
   }
 };
+
+interface Event {
+  videoId: string;
+  id: number;
+  timestamp: number;
+  eventType: string;
+  player: string;
+  outcome: string;
+  time: string;
+}
+
+export const sumActions = (events: Event[]) => {
+  const result: Record<string, any> = {};
+
+  for (let item of events) {
+    if (!(item.player in result)) {
+      result[item.player] = {};
+    }
+
+    if (!(item.eventType in result[item.player])) {
+      result[item.player][item.eventType] = {
+        total: 0,
+        successful: 0,
+        error: 0,
+        neutral: 0,
+      };
+    }
+
+    result[item.player][item.eventType].total++;
+
+    const outcome = item.outcome.toLowerCase();
+    if (outcome.includes("success")) {
+      result[item.player][item.eventType].successful++;
+    } else if (outcome.includes("error")) {
+      result[item.player][item.eventType].error++;
+    } else {
+      result[item.player][item.eventType].neutral++;
+    }
+  }
+  return result;
+};

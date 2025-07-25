@@ -6,7 +6,12 @@ import { VideoPlayer } from "./components/VideoPlayer";
 import { eventType, teamPlayer, outcome } from "./data/volleyballData";
 import TagPanel from "./components/TagPanel";
 import { EventTimeline } from "./components/EventTimeline";
-import { cleanupExpiredVideos, generateVideoKey } from "./util/helper";
+import {
+  cleanupExpiredVideos,
+  generateVideoKey,
+  sumActions,
+} from "./util/helper";
+import Export from "./components/Export";
 
 interface Event {
   videoId: string;
@@ -36,6 +41,10 @@ function App() {
     } else {
       setEvents([]);
     }
+  };
+  const handleExportJson = () => {
+    const sumObject = sumActions(events);
+    console.log(sumObject);
   };
   const handleTimeUpdate = (time: number) => {
     setCurrentTime(time);
@@ -102,6 +111,9 @@ function App() {
               onEventClick={handleEventClick}
               onDeleteClick={handleDeleteTag}
             />
+          </div>
+          <div className="col-span-4">
+            <Export exportJson={handleExportJson} />
           </div>
         </div>
       </div>
