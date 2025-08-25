@@ -15,5 +15,4 @@ dist/
 
 
 # Data Portion:
-backend/data/videos
-backend/data/raw
+backend/data/*
