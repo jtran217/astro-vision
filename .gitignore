@@ -12,3 +12,8 @@ __pycache__/
 dist/
 *.log
 .env
+
+
+# Data Portion:
+./data/videos
+./data/raw
