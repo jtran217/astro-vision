@@ -115,9 +115,39 @@ pip install -r backend/requirements.txt
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+### Manual Tagging Videos:
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+![Click Upload](https://res.cloudinary.com/dittybzbt/image/upload/v1756649296/clickUpload_tgca8w.png)
+
+* Click on upload video and select video
+
+![Success Upload](https://res.cloudinary.com/dittybzbt/image/upload/v1756649946/successUpload_uttrqv.png)
+![Tag Display](https://res.cloudinary.com/dittybzbt/image/upload/v1756649955/tagDisplay_lsjwrd.png)
+
+* The video player should load the video and allow manual tagging.
+  * In the tagging panel, the user can select the player, event type, and outcome, then add the tag to save. Tags are displayed in the timeline area, where unnecessary tags can be removed.
+  * The user can easily start and stop video playback with the **spacebar**. The **left arrow key** rewinds 2 seconds, and the **right arrow key** fast-forwards 2 seconds.
+* Once tagging is finished, the user can export the results as either a JSON or CSV file.
+* Initially, JSON was supported and planned to be used for training the ML model, but the project eventually switched to using Excel instead.
+
+### Training the ML Model:
+* The first step is to ensure that the video used for tagging is moved to the `backend/data/videos` folder and that the CSV file is the `backend/data/raw` folder.
+  
+#### Transforming CSV -> CLean ML Ready Format:
+* To make the data more friendly for the model, we run the `transform_csv` script in the `backend/scripts` folder.
+
+``` sh
+python .\scripts\transform_csv.py --in .\data\raw\analysis-2025-07-25.csv --out .\data\processed\manifest1.csv
+```
+* The `--in` argument specifies the location of the tagged CSV file.  
+* The `--out` argument defines the output path and filename (e.g., `manifest1.csv`) for the ML-ready CSV file.  
+
+* A successful run will display an output similar to the example below in the terminal:
+```sh
+Read 160 rows → wrote 160, skipped 0
+Action counts: {'serve': 33, 'block': 31, 'pass': 48, 'spike': 23, 'set': 25}
+```
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -136,34 +166,3 @@ See the [open issues](https://github.com/github_username/repo_name/issues) for a
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
-[forks-url]: https://github.com/github_username/repo_name/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
-[stars-url]: https://github.com/github_username/repo_name/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo_name/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
-[product-screenshot]: images/screenshot.png
-[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
-[Next-url]: https://nextjs.org/
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[React-url]: https://reactjs.org/
-[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
-[Vue-url]: https://vuejs.org/
-[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
-[Angular-url]: https://angular.io/
-[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
-[Svelte-url]: https://svelte.dev/
-[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
-[Laravel-url]: https://laravel.com
-[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
-[Bootstrap-url]: https://getbootstrap.com
-[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
-[JQuery-url]: https://jquery.com 
