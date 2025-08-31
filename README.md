@@ -99,6 +99,18 @@ In the near term, AstroVision aims to expand tagging capabilities beyond the ini
 
 ### Backend
 
+#### Prerequisites
+* Before running the backend locally make sure you have:
+*  * Python 3.10+
+   * ffmpeg on PATH (used by the clip extractor)
+   *  * macOS(Homebrew): `brew install ffmpeg`
+      * Windows(Chocolatey): `choco install ffmpeg`
+      * Verify: `ffmpeg -version`
+
+#### Installation 
+```sh
+pip install -r backend/requirements.txt
+```
 
 <!-- USAGE EXAMPLES -->
 ## Usage
