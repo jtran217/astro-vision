@@ -1,0 +1,13 @@
+# Core (required for all scripts)
+torch>=2.2,<3
+torchvision>=0.17,<1
+opencv-python>=4.8
+numpy>=1.24
+pillow>=10.0
+
+# Optional (uncomment if needed)
+# pandas>=2.0         # if you want to read Excel .xlsx directly
+# openpyxl>=3.1       # engine for reading .xlsx with pandas
+# matplotlib>=3.8     # plotting/eval visuals
+# fastapi>=0.110      # future /analyze API
+# uvicorn[standard]>=0.27

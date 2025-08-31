@@ -1,3 +1,28 @@
+"""
+extract_clips.py - Video Clip Extraction Pipeline
+
+This script extracts short video clips from volleyball footage based on tagged events
+in a manifest.csv file. It creates individual training clips centered around specific
+volleyball actions (serves, spikes, passes, etc.) for machine learning training.
+
+Main workflow:
+1. Read manifest.csv with tagged volleyball events
+2. For each event, extract a video clip with configurable pre/post windows
+3. Use FFmpeg to create clips with consistent encoding
+4. Generate descriptive filenames for easy organization
+5. Create clips_index.csv for downstream ML training scripts
+
+Purpose: Converts tagged volleyball moments into individual training clips,
+enabling computer vision models to learn volleyball action recognition.
+
+Usage:
+    python extract_clips.py --manifest manifest.csv --video-root videos --out-dir clips
+
+Output:
+    clips/game1_spike_succ_Johnny_Tran_45200_1.mp4  (individual clips)
+    clips/clips_index.csv                            (index for ML training)
+"""
+
 import argparse,csv,math,os,subprocess,sys
 from collections import defaultdict
 from pathlib import Path

@@ -1,3 +1,29 @@
+"""
+make_splits.py - ML Dataset Splitting Pipeline
+
+This script takes extracted volleyball clips and creates train/validation/test splits
+for machine learning training. It ensures balanced distribution of volleyball actions
+across all splits using stratified sampling.
+
+Main workflow:
+1. Read clips_index.csv (output from extract_clips.py)
+2. Group clips by volleyball action type (serve, spike, pass, etc.)
+3. Apply per-action limits if specified
+4. Split each action group into train/val/test with specified ratios
+5. Write separate CSV files for each split
+
+Purpose: Creates proper ML datasets with balanced action representation across splits,
+preventing data leakage and ensuring fair evaluation.
+
+Usage:
+    python make_splits.py --index clips_index.csv --out-dir data/splits
+    
+Output:
+    data/splits/train.csv - Training set (70% by default)
+    data/splits/val.csv   - Validation set (15% by default) 
+    data/splits/test.csv  - Test set (15% by default)
+"""
+
 import argparse, csv, random
 from collections import defaultdict
 from pathlib import Path

@@ -1,3 +1,22 @@
+"""
+transform_csv.py - Volleyball Data Processing Pipeline
+
+This script converts raw CSV exports from the volleyball tagging app into a clean,
+ML-ready format. It handles various input formats, standardizes column names,
+normalizes data values, and outputs a consistent manifest.csv for training.
+
+Main workflow:
+1. Read raw CSV with flexible column mapping
+2. Parse and validate timestamps 
+3. Standardize action names and outcomes
+4. Clean video filenames
+5. Remove duplicates
+6. Output clean manifest.csv
+
+Usage:
+    python transform_csv.py --in raw_export.csv --out manifest.csv
+"""
+
 import argparse,csv,re
 
 IN_COLS = {
