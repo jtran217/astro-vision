@@ -1,9 +1,33 @@
 
 """
-Baseline: classify action using the center frame of each clip.
-- Uses OpenCV to grab 1 frame per clip.
-- Trains ResNet-18 for action classification.
-- Ignores 'outcome' for now (we can add a second head later).
+train_baseline_frame.py - Volleyball Action Classification Baseline Model
+
+This script trains a baseline computer vision model for volleyball action recognition
+using single frames extracted from video clips. It serves as a simple but effective
+starting point for volleyball action classification before moving to more complex
+temporal models.
+
+Main workflow:
+1. Load train/validation/test splits from make_splits.py output
+2. Extract center frame from each video clip using OpenCV
+3. Train ResNet-18 classifier on these single frames
+4. Evaluate performance and save best model
+
+Purpose: Establishes baseline performance for volleyball action recognition using
+only spatial information (single frames), ignoring temporal dynamics. This helps
+determine how much action information is contained in individual frames vs. motion.
+
+Model Architecture:
+- ResNet-18 pre-trained on ImageNet (transfer learning)
+- Modified final layer for volleyball actions (serve, spike, pass, etc.)
+- Input: 224x224 RGB images (center frames from clips)
+- Output: Action classification probabilities
+
+Usage:
+    python train_baseline_frame.py --splits-dir data/splits --epochs 10 --batch-size 32
+
+Output:
+    data/splits/baseline_resnet18.pt - Best model checkpoint with class mappings
 """
 import argparse, csv, os, random
 from pathlib import Path
