@@ -147,7 +147,55 @@ python .\scripts\transform_csv.py --in .\data\raw\analysis-2025-07-25.csv --out 
 Read 160 rows → wrote 160, skipped 0
 Action counts: {'serve': 33, 'block': 31, 'pass': 48, 'spike': 23, 'set': 25}
 ```
+#### Extracting Clips:
+* Next step is to create short clips of where the action occured to use as training for the model.
+* To do this we run the `extract_clips.py` script
+```sh
+python .\scripts\extract_clips.py  --manifest .\data\processed\manifest1.csv --video-root .\data\videos --out-dir .\data\clips\
+```
+* A successful output will display:
+``` sh
+Scanned manifest rows: 160
+Wrote clips: 160 → clips_index.csv
+Per-action counts: {'serve': 33, 'block': 31, 'pass': 48, 'spike': 23, 'set': 25}
+```
+* The script command above will store the clips in the `data/clips` folder. By default the clips are 1 second pre and 2 seconds post, thus overall clips lengths of 3 seconds are created.
+* Furthermore, the script generates a clips_index.csv that will be used in the next step.
 
+#### Spliting the Dataset:
+* To split the dataset, run the `make_splits.py` script. By default, the data is divided into 70% training, 15% validation, and 15% test. The script generates three csv files that record which video clips belong to each set.
+* The command below will store these csv in the `data/splits` folder.
+``` sh
+python .\scripts\make_splits.py --index .\data\clips\clips_index.csv --out-dir .\data\splits\
+```
+* A successful run the command will display a similar output below:
+``` sh
+    ✅ splits written:
+      train: data\splits\train.csv {'block': 21, 'pass': 34, 'serve': 23, 'set': 17, 'spike': 17}
+      val  : data\splits\val.csv {'block': 5, 'pass': 7, 'serve': 5, 'set': 4, 'spike': 3}
+      test : data\splits\test.csv {'block': 5, 'pass': 7, 'serve': 5, 'set': 4, 'spike': 3}
+```
+
+#### Training Ceenter-Frame ResNet-18 Classifer:
+* Why this model: We start with a single middle-frame image model because it’s quick to train, easy to debug, and gives a solid starting score before we try more complex video models.
+``` sh
+python .\scripts\train_baseline_frame.py --splits-dir .\data\splits\ --epoch 10 --batch-size 32
+```
+* A successful run should display the following:
+``` sh
+Epoch 01 | train loss 1.5240 acc 0.384 | val loss 3.1779 acc 0.208
+Epoch 02 | train loss 0.6393 acc 0.723 | val loss 1.9027 acc 0.500
+Epoch 03 | train loss 0.4626 acc 0.848 | val loss 2.7729 acc 0.458
+Epoch 04 | train loss 0.3211 acc 0.893 | val loss 1.7058 acc 0.333
+Epoch 05 | train loss 0.1380 acc 0.955 | val loss 1.3105 acc 0.625
+Epoch 06 | train loss 0.1055 acc 0.964 | val loss 4.8146 acc 0.542
+Epoch 07 | train loss 0.0792 acc 0.955 | val loss 9.1778 acc 0.292
+Epoch 08 | train loss 0.1009 acc 0.955 | val loss 7.4453 acc 0.333
+Epoch 09 | train loss 0.0572 acc 0.973 | val loss 3.7940 acc 0.458
+Epoch 10 | train loss 0.0486 acc 0.973 | val loss 1.8938 acc 0.458
+TEST  | loss 1.1718 acc 0.708
+```
+* Currently, the model achieves ~71% test accuracy (N=161). Based on these results, my next steps are: (1) improve data quality by adding more tagged clips and balancing classes; (2) move from a single-frame model to a short-clip model to capture temporal context.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -156,12 +204,29 @@ Action counts: {'serve': 33, 'block': 31, 'pass': 48, 'spike': 23, 'set': 25}
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
+### Baseline (DONE)
+- [x] Center-frame **ResNet-18** classifier (ImageNet pretrained)  
+- [x] Scripts: tags → manifest → clips → splits → train → eval  
+- [x] Result: **~71% test accuracy (N=161)**
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+### Data Quality and Balance
+- [ ] Add ≥ **+300** tagged clips (spread across actions)
+- [ ] Class imbalance: **minority/majority ≥ 0.8** or use weighted sampling
+- [ ] Validate splits (no duplicate clips across train/val/test)
+- [ ] Re-train baseline → aim for +2–4 percentage points in overall accuracy (e.g., 71% → 73–75%), and +5 percentage points in recall for the weakest action.
+
+### Short-Clip Temporal Model
+- [ ] Extract **8–16 frames** per event (centered)
+- [ ] Implement a 3D CNN / SlowFast-tiny (or frame-stack with 2D backbone)
+- [ ] Compare against baseline on the **same test set**
+- [ ] Goal: For hard actions (e.g., set), catch 5–10 more correct plays out of every 100
+      
+### API MVP
+- [ ] **FastAPI** `/analyze` endpoint: input video/URL → JSON summary
+- [ ] Batch inference pipeline: decode → sample frames → predict → aggregate
+- [ ] Basic schema: `{ players: {name: {spike:{attempts,success}, ...}}, totals: {...} }`
+- [ ] Add a tiny **demo set** + `run_all.sh`
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
