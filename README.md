@@ -24,6 +24,7 @@ This project serves as a foundation for blending sports, technology, and AI, wit
 
 
 <!-- TABLE OF CONTENTS -->
+<!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
   <ol>
@@ -36,12 +37,43 @@ This project serves as a foundation for blending sports, technology, and AI, wit
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#frontend">Frontend</a>
+          <ul>
+            <li><a href="#prerequisites">Prerequisites</a></li>
+            <li><a href="#installation">Installation</a></li>
+          </ul>
+        </li>
+        <li><a href="#backend">Backend</a>
+          <ul>
+            <li><a href="#prerequisites-1">Prerequisites</a></li>
+            <li><a href="#installation-1">Installation</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
+    <li>
+      <a href="#usage">Usage</a>
+      <ul>
+        <li><a href="#manual-tagging-videos">Manual Tagging Videos</a></li>
+        <li><a href="#training-the-ml-model">Training the ML Model</a>
+          <ul>
+            <li><a href="#transforming-csv---clean-ml-ready-format">Transforming CSV → Clean ML Ready Format</a></li>
+            <li><a href="#extracting-clips">Extracting Clips</a></li>
+            <li><a href="#spliting-the-dataset">Splitting the Dataset</a></li>
+            <li><a href="#training-ceenter-frame-resnet-18-classifer">Training Center-Frame ResNet-18 Classifier</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="#roadmap">Roadmap</a>
+      <ul>
+        <li><a href="#baseline-done">Baseline (DONE)</a></li>
+        <li><a href="#data-quality-and-balance">Data Quality and Balance</a></li>
+        <li><a href="#short-clip-temporal-model">Short-Clip Temporal Model</a></li>
+        <li><a href="#api-mvp">API MVP</a></li>
+      </ul>
+    </li>
   </ol>
 </details>
 
